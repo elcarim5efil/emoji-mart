@@ -20,14 +20,14 @@ export default class Picker extends Component {
 
     this.observers = []
 
+    this.handleDarkMedia = this.handleDarkMedia.bind(this)
+
     this.state = {
       pos: [-1, -1],
       perLine: this.initDynamicPerLine(props),
       visibleRows: { 0: true },
       ...this.getInitialState(props),
     }
-
-    this.handleDarkMedia = this.handleDarkMedia.bind(this)
   }
 
   getInitialState(props = this.props) {
@@ -208,12 +208,17 @@ export default class Picker extends Component {
       if (this.darkMedia.media.match(/^not/)) return 'light'
 
       this.darkMedia.addListener(this.handleDarkMedia)
+      // this.darkMedia.addListener(() => {
+      //   if (this.props.theme != 'auto') return
+      //   this.setState({ theme: this.darkMedia.matches ? 'dark' : 'light' })
+      // })
     }
 
     return this.darkMedia.matches ? 'dark' : 'light'
   }
 
   handleDarkMedia() {
+    console.log({ x: this });
     if (this.props.theme != 'auto') return
     this.setState({ theme: this.darkMedia.matches ? 'dark' : 'light' })
   }
@@ -762,6 +767,7 @@ export default class Picker extends Component {
     const key = pos.concat(emoji.id).join('')
 
     return (
+      // <PureInlineComponent key={key} {...{ selected, skin, size }}>
         <button
           aria-label={native}
           aria-selected={selected || undefined}
@@ -803,6 +809,7 @@ export default class Picker extends Component {
             getSpritesheetURL={this.props.getSpritesheetURL}
           />
         </button>
+      // </PureInlineComponent>
     )
   }
 
