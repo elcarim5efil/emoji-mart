@@ -20,6 +20,8 @@ export default class Picker extends Component {
 
     this.observers = []
 
+    this.handleDarkMedia = this.handleDarkMedia.bind(this)
+
     this.state = {
       pos: [-1, -1],
       perLine: this.initDynamicPerLine(props),
@@ -127,6 +129,10 @@ export default class Picker extends Component {
 
   unregister() {
     document.removeEventListener('click', this.handleClickOutside)
+
+    if (this.darkMedia) {
+      this.darkMedia.removeListener(this.handleDarkMedia)
+    }
     this.unobserve()
   }
 
@@ -201,13 +207,20 @@ export default class Picker extends Component {
       this.darkMedia = matchMedia('(prefers-color-scheme: dark)')
       if (this.darkMedia.media.match(/^not/)) return 'light'
 
-      this.darkMedia.addListener(() => {
-        if (this.props.theme != 'auto') return
-        this.setState({ theme: this.darkMedia.matches ? 'dark' : 'light' })
-      })
+      this.darkMedia.addListener(this.handleDarkMedia)
+      // this.darkMedia.addListener(() => {
+      //   if (this.props.theme != 'auto') return
+      //   this.setState({ theme: this.darkMedia.matches ? 'dark' : 'light' })
+      // })
     }
 
     return this.darkMedia.matches ? 'dark' : 'light'
+  }
+
+  handleDarkMedia() {
+    console.log({ x: this });
+    if (this.props.theme != 'auto') return
+    this.setState({ theme: this.darkMedia.matches ? 'dark' : 'light' })
   }
 
   handleClickOutside = (e) => {
@@ -754,7 +767,7 @@ export default class Picker extends Component {
     const key = pos.concat(emoji.id).join('')
 
     return (
-      <PureInlineComponent key={key} {...{ selected, skin, size }}>
+      // <PureInlineComponent key={key} {...{ selected, skin, size }}>
         <button
           aria-label={native}
           aria-selected={selected || undefined}
@@ -796,7 +809,7 @@ export default class Picker extends Component {
             getSpritesheetURL={this.props.getSpritesheetURL}
           />
         </button>
-      </PureInlineComponent>
+      // </PureInlineComponent>
     )
   }
 
